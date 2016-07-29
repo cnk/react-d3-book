@@ -51,7 +51,13 @@
     "webpack-hot-middleware": "^2.9.1"
   },
   "dependencies": {
+    "css-loader": "^0.23.1",
+    "d3": "^4.1.1",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "lodash": "^4.14.1",
     "react": "^0.14.7",
-    "react-dom": "^0.14.7"
+    "react-dom": "^0.14.7",
+    "style-loader": "^0.13.1"
   }
 }
