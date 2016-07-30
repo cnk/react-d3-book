@@ -12,6 +12,6 @@ String.prototype.decapitalize = function() {
 }
 
 ReactDom.render(
-  <H1BGraph url="data/h1bs.csv" />,
+  <H1BGraph url="/public/data/h1bs.csv" />,
   document.querySelectorAll('.h1bgraph')[0]
 );
