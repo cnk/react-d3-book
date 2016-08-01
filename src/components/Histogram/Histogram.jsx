@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {histogram, min, max} from 'd3-array';
 import {scaleLinear} from 'd3-scale';
+import Axis from './Axis';
 
 
 class HistogramBar extends Component {
@@ -70,13 +71,12 @@ class Histogram extends Component {
   }
 
   makeBar(bar) {
-    let percent = bar.length / this.props.data.length * 100;
-    let props = {percent: percent,
+    let props = {percent: bar.length / this.props.data.length * 100,
                  x: this.props.axisMargin,
                  y: this.yScale(bar.x0),
                  width: this.widthScale((bar.length)),
                  height: this.yScale(bar.x1 - bar.x0),
-                 key: "histogram-bar-"+bar.x0+"-"+bar.length
+                 key: 'histogram-bar-' + bar.x0 + '-' + bar.length
                 }
 
     return (<HistogramBar {...props} />);
@@ -89,8 +89,9 @@ class Histogram extends Component {
     return (
         <g className="histogram" transform={translate}>
           <g className="bars">
-        {bars.map(this.makeBar, this)}
+            {bars.map(this.makeBar, this)}
           </g>
+          <Axis {...this.props} data={bars} />
         </g>
     );
   }
