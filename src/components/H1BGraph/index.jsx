@@ -17,7 +17,7 @@ class H1BGraph extends Component {
 
   loadRawData() {
     let rowCleanup = function(d) {
-      let dateFormat = timeParse("%m/%d/%Y");
+      let dateFormat = timeParse('%m/%d/%Y');
 
       if (!d['base salary']) {
         return null;

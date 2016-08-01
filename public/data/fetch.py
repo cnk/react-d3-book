@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from pyquery import PyQuery as pq
-import requests, csv
+import requests
+import csv
+
 
 def download(url):
     d = pq(url=url)
@@ -14,16 +16,15 @@ def download(url):
 
     f.closed
 
+
 def parse():
     d = pq(filename="raw.html")
 
-    print d.encoding
+    print(d.encoding)
 
     def cell(td):
         td = d(td)
-        return td.text().lower().encode("utf-8").replace("ÿ", " ") \
-          if td.text() else ""
-
+        return td.text().lower().encode("utf-8").replace("ÿ", " ") if td.text() else ""
 
     with open("h1bs.csv", "wb") as csvfile:
         writer = csv.writer(csvfile)
@@ -36,5 +37,5 @@ def parse():
             writer.writerow([cell(td) for td in d(row)("td")])
 
 if __name__ == "__main__":
-    #download("http://h1bdata.info/beta/index.php?em=&job=software+*")
+    # download("http://h1bdata.info/beta/index.php?em=&job=software+*")
     parse()
