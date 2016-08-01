@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {csv} from 'd3-request';
 import {timeParse} from 'd3-time-format';
+import Histogram from '../Histogram';
 
 class H1BGraph extends Component {
   constructor() {
@@ -52,10 +53,22 @@ class H1BGraph extends Component {
         <h4>Loading data about 81,000 H1B software industry visas</h4>
       )
     } else {
+      let params = {
+        bins: 20,
+        width: 500,
+        height: 500,
+        axisMargin: 83,
+        topMargin: 10,
+        bottomMargin: 5,
+        value: (d) => d.base_salary
+      },
+          fullWidth = 700;
+
       return (
         <div>
           <h4>Content from H1BGraph Component</h4>
-          <svg>
+          <svg width={fullWidth} height={params.height}>
+            <Histogram {...params} data={this.state.rawData} />
           </svg>
         </div>
       );
