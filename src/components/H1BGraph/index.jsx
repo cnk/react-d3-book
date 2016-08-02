@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {csv} from 'd3-request';
 import {timeParse} from 'd3-time-format';
 import Histogram from '../Histogram';
+import Controls from './Controls';
 
 require('./style.less');
 
@@ -9,7 +10,8 @@ class H1BGraph extends Component {
   constructor() {
     super();
     this.state = {
-      rawData: []
+      rawData: [],
+      dataFilter: () => true
     };
   }
 
@@ -18,35 +20,35 @@ class H1BGraph extends Component {
   }
 
   cleanJobs(title) {
-      title = title.replace(/[^a-z ]/gi, '');
+    title = title.replace(/[^a-z ]/gi, '');
 
-      if (title.match(/consultant|specialist|expert|prof|advis|consult/)) {
-          title = 'consultant';
-      }else if (title.match(/analyst|strateg|scien/)) {
-          title = 'analyst';
-      }else if (title.match(/manager|associate|train|manag|direct|supervis|mgr|chief/)) {
-          title = 'manager';
-      }else if (title.match(/architect/)) {
-          title = 'architect';
-      }else if (title.match(/lead|coord/)) {
-          title = 'lead';
-      }else if (title.match(/eng|enig|ening|eign/)) {
-          title = 'engineer';
-      }else if (title.match(/program/)) {
-          title = 'programmer';
-      }else if (title.match(/design/)) {
-          title = 'designer';
-      }else if (title.match(/develop|dvelop|develp|devlp|devel|deelop|devlop|devleo|deveo/)) {
-          title = 'developer';
-      }else if (title.match(/tester|qa|quality|assurance|test/)) {
-          title = 'tester';
-      }else if (title.match(/admin|support|packag|integrat/)) {
-          title = 'administrator';
-      }else{
-          title = 'other';
-      }
+    if (title.match(/consultant|specialist|expert|prof|advis|consult/)) {
+        title = 'consultant';
+    }else if (title.match(/analyst|strateg|scien/)) {
+        title = 'analyst';
+    }else if (title.match(/manager|associate|train|manag|direct|supervis|mgr|chief/)) {
+        title = 'manager';
+    }else if (title.match(/architect/)) {
+        title = 'architect';
+    }else if (title.match(/lead|coord/)) {
+        title = 'lead';
+    }else if (title.match(/eng|enig|ening|eign/)) {
+        title = 'engineer';
+    }else if (title.match(/program/)) {
+        title = 'programmer';
+    }else if (title.match(/design/)) {
+        title = 'designer';
+    }else if (title.match(/develop|dvelop|develp|devlp|devel|deelop|devlop|devleo|deveo/)) {
+        title = 'developer';
+    }else if (title.match(/tester|qa|quality|assurance|test/)) {
+        title = 'tester';
+    }else if (title.match(/admin|support|packag|integrat/)) {
+        title = 'administrator';
+    }else{
+        title = 'other';
+    }
 
-      return title;
+    return title;
   }
 
   loadRawData() {
@@ -63,7 +65,7 @@ class H1BGraph extends Component {
         start_date: dateFormat(d['start date']),
         case_status: d['case status'],
         job_title: d['job title'],
-        // clean_job_title: this.cleanJobs(d['job title']),
+        clean_job_title: this.cleanJobs(d['job title']),  // CNK not in PDF - referenced p 39
         base_salary: Number(d['base salary']),
         salary_to: d['salary to'] ? Number(d['salary to']) : null,
         city: d.city,
@@ -71,7 +73,7 @@ class H1BGraph extends Component {
       };
     };
 
-    csv(this.props.url, rowCleanup, (error, rows) => {
+    csv(this.props.url, rowCleanup.bind(this), (error, rows) => {
       if (error) {
         console.error(error);
         console.error(error.stack);
@@ -79,6 +81,10 @@ class H1BGraph extends Component {
         this.setState({rawData: rows});
       }
     });
+  }
+
+  updateDataFilter(filter) {
+    this.setState({dataFilter: filter});
   }
 
   render() {
@@ -97,13 +103,15 @@ class H1BGraph extends Component {
         value: (d) => d.base_salary
       };
       let fullWidth = 700;
+      let filteredData = this.state.rawData.filter(this.state.dataFilter);
 
       return (
         <div>
           <h4>Content from H1BGraph Component</h4>
           <svg width={fullWidth} height={params.height}>
-            <Histogram {...params} data={this.state.rawData} />
+            <Histogram {...params} data={filteredData} />
           </svg>
+          <Controls data={this.state.rawData} updateDataFilter={this.updateDataFilter.bind(this)} />
         </div>
       );
     }
